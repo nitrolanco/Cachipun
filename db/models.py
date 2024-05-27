@@ -1,7 +1,8 @@
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from database import db
+from db.database import db
 from typing import List
+
 
 class User(db.Model):
     __tablename__ = "user"
@@ -10,8 +11,9 @@ class User(db.Model):
     username: Mapped[str] = mapped_column(String(50), unique=True)
     password: Mapped[str] = mapped_column(String(50))
     kind: Mapped[str] = mapped_column(String(50))
-    points: Mapped[int]
+    highscore: Mapped[int]
     historial: Mapped[List["Historial"]] = relationship(back_populates="user")
+
 
 class Historial(db.Model):
     __tablename__ = "historial"
@@ -20,4 +22,3 @@ class Historial(db.Model):
     points: Mapped[int]
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = relationship(back_populates="historial")
-    
