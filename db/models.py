@@ -1,6 +1,6 @@
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from db.database import db
+from db.database import *
 from typing import List
 
 
@@ -9,7 +9,7 @@ class User(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(50), unique=True)
-    password: Mapped[str] = mapped_column(String(50))
+    password: Mapped[str] = mapped_column(String(255))
     kind: Mapped[str] = mapped_column(String(50))
     highscore: Mapped[int]
     historial: Mapped[List["Historial"]] = relationship(back_populates="user")

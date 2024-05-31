@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
+import os
 
 
 class Base(DeclarativeBase):
@@ -9,7 +10,7 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(model_class=Base)
 
-SQLALCHEMY_DATABASE_URL = "mysql://root:1321@localhost:3306/cachipun"
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 # create the app
 app = Flask(__name__)
 # configure the SQLite database, relative to the app instance folder

@@ -2,9 +2,22 @@ from flask import Flask, request, jsonify
 from sqlalchemy.orm import sessionmaker
 import hashlib
 import random
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    jwt_required,
+    get_jwt_identity,
+)
 from db.database import db
 from db import models
 from db.database import app
+import datetime
+import os
+
+jwt = JWTManager(app)
+
+app.config["JWT_SECRET_KEY"] = os.getenv("SECRET_KEY")
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(days=1)
 
 
 @app.route("/api/v1/game/get_next_move", methods=["GET"])
@@ -41,6 +54,28 @@ def create_user():
         db.session.rollback()
         # Return an error message
         return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/v1/auth/login", methods=["POST"])
+def login():
+    login_data = request.get_json()
+    if login_data["username"] and login_data["password"]:
+        user = (
+            db.session.query(models.User)
+            .filter_by(username=login_data["username"])
+            .first()
+        )
+        if (
+            user.username == login_data["username"]
+            and user.password
+            == hashlib.sha256(login_data["password"].encode("utf-8")).hexdigest()
+        ):
+            access_token = create_access_token(identity=user.username)
+            return jsonify(access_token=access_token), 200
+        else:
+            return jsonify({"msg": "Credenciales incorrectas"}), 401
+
+    return jsonify({"msg": "Credenciales incorrectas"}), 401
 
 
 if __name__ == "__main__":
