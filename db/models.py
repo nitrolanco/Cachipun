@@ -14,6 +14,15 @@ class User(db.Model):
     highscore: Mapped[int]
     historial: Mapped[List["Historial"]] = relationship(back_populates="user")
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "password": self.password,
+            "kind": self.kind,
+            "highscore": self.highscore,
+        }
+
 
 class Historial(db.Model):
     __tablename__ = "historial"
