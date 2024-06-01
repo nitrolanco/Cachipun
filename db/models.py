@@ -12,7 +12,7 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(String(255))
     kind: Mapped[str] = mapped_column(String(50))
     highscore: Mapped[int]
-    historial: Mapped[List["Historial"]] = relationship(back_populates="user")
+    historial: Mapped[List["Historial"]] = relationship(back_populates="user", cascade="all, delete-orphan")
 
     def to_dict(self):
         return {
