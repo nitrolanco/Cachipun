@@ -74,7 +74,14 @@ def login():
         else:
             return jsonify({"msg": "Credenciales incorrectas"}), 401
 
-    return jsonify({"msg": "Credenciales incorrectas"}), 401
+    return jsonify({"msg": "Ingrese credenciales"}), 401
+
+
+@app.route("/api/v1/users", methods=["GET"])
+def get_users():
+    users = db.session.query(models.User).all()
+    users_dict = [user.to_dict() for user in users]
+    return jsonify(users_dict), 200
 
 
 if __name__ == "__main__":
