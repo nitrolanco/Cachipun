@@ -2,15 +2,15 @@ from flask import Flask, request, jsonify
 from sqlalchemy.orm import sessionmaker
 import hashlib
 import random
+from flask_pydantic import validate
 from flask_jwt_extended import (
     JWTManager,
     create_access_token,
     jwt_required,
     get_jwt_identity,
 )
-from db.database import db
-from db import models
-from db.database import app
+from db.database import db, app
+from db import models, crud
 import datetime
 import os
 
@@ -18,7 +18,6 @@ jwt = JWTManager(app)
 
 app.config["JWT_SECRET_KEY"] = os.getenv("SECRET_KEY")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(days=1)
-
 
 @app.route("/api/v1/game/get_next_move", methods=["GET"])
 def get_next_move():
